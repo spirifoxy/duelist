@@ -8,20 +8,25 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-@WebServlet("/")
+@WebServlet("/menu")
 public class MainServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-//        CommonDao userDao = new UserDaoMysql();
-//        resp.setContentType("text/plain");
-//        PrintWriter out = resp.getWriter();
-//        out.println(userDao.getAll());
+
+        HttpSession session = req.getSession(false);
+        if (session == null) {
+            System.out.println("No session in GET request to Game!");
+            resp.sendRedirect("./login");
+            return;
+        }
 
         PrintWriter out = resp.getWriter();
-        out.println("Hello worldqwe!");
+        out.println("Hello world");
+
     }
 }

@@ -18,6 +18,31 @@ public class UserDaoMysql implements CommonDao<User> {
         return null;
     }
 
+    public User getByUsername(String username) {
+        User user = null;
+        try {
+            Connection connection = ConnectionManager.connect();
+            String query = "select * from " + tableName + " where username = ?";
+
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString(1, username);
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                user = new User(
+                        resultSet.getInt(1),
+                        resultSet.getString(2),
+                        resultSet.getString(3),
+                        resultSet.getInt(4),
+                        resultSet.getInt(5)
+                );
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return user;
+    }
+
     @Override
     public void insert(User user) {
 
