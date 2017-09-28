@@ -39,17 +39,35 @@ public class LoginServlet extends HttpServlet {
         String username = req.getParameter("username");
         String password = req.getParameter("password");
 
-        System.out.println(username);
-        System.out.println(password);
-
         UserDaoMysql userDao = new UserDaoMysql();
         User user = userDao.getByUsername(username);
-        //TODO rewrite checkPassword
-        if (user != null && Utils.checkPassword(password, user.getPassword())) {
+
+        boolean isPasswordCorrect = false;
+        try {
+            isPasswordCorrect = Utils.checkPassword(password, user.getPassword());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if (user != null) {
+            if (isPasswordCorrect) {
+                session.setAttribute("user", user);
+                resp.sendRedirect("./menu");
+            } else {
+                //TODO error handling
+                resp.sendRedirect("./login");
+            }
+        } else { //register new user
+            String passwordHash = null;
+            try {
+                passwordHash = Utils.getSaltedHash(password);
+            } catch (Exception e) {
+                throw new IllegalArgumentException("Ошибка при регистрации пользователя");
+            }
+            user = new User(username, passwordHash);
+            userDao.insert(user);
             session.setAttribute("user", user);
             resp.sendRedirect("./menu");
-        } else {
-            resp.sendRedirect("./login");
         }
     }
 }

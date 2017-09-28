@@ -19,23 +19,23 @@ public class UserDaoMysql implements CommonDao<User> {
     }
 
     public User getByUsername(String username) {
+
         User user = null;
-        try {
-            Connection connection = ConnectionManager.connect();
-            String query = "select * from " + tableName + " where username = ?";
+        String query = "select * from " + tableName + " where username = ?";
+        try (Connection connection = ConnectionManager.connect();
+             PreparedStatement statement = connection.prepareStatement(query)) {
 
-            PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, username);
-            ResultSet resultSet = statement.executeQuery();
-
-            if (resultSet.next()) {
-                user = new User(
-                        resultSet.getInt(1),
-                        resultSet.getString(2),
-                        resultSet.getString(3),
-                        resultSet.getInt(4),
-                        resultSet.getInt(5)
-                );
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    user = new User(
+                            resultSet.getInt(1),
+                            resultSet.getString(2),
+                            resultSet.getString(3),
+                            resultSet.getInt(4),
+                            resultSet.getInt(5)
+                    );
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -45,7 +45,21 @@ public class UserDaoMysql implements CommonDao<User> {
 
     @Override
     public void insert(User user) {
+        if (user == null) {
+            throw new IllegalArgumentException("Ошибка при регистрации пользователя");
+        }
+        String query = "insert into users (username, password, damage, hp) values (?,?,?,?)";
+        try (Connection connection = ConnectionManager.connect();
+             PreparedStatement statement = connection.prepareStatement(query)) {
 
+            statement.setString(1, user.getUsername());
+            statement.setString(2, user.getPassword());
+            statement.setInt(3, user.getDamage());
+            statement.setInt(4, user.getHp());
+            statement.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -57,12 +71,10 @@ public class UserDaoMysql implements CommonDao<User> {
     public List<User> getAll() {
 
         List<User> users = new ArrayList<>();
-        try {
-            Connection connection = ConnectionManager.connect();
-            String query = "select * from " + tableName;
-
-            PreparedStatement statement = connection.prepareStatement(query);
-            ResultSet resultSet = statement.executeQuery();
+        String query = "select * from " + tableName;
+        try (Connection connection = ConnectionManager.connect();
+             PreparedStatement statement = connection.prepareStatement(query);
+             ResultSet resultSet = statement.executeQuery()) {
 
             while (resultSet.next()) {
                 users.add(new User(

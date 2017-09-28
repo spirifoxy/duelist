@@ -16,6 +16,7 @@ public class ConnectionManager {
                     ServerPreferences.DB_USERNAME, ServerPreferences.DB_PASSWORD);
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
+
         }
         return connection;
     }
