@@ -12,14 +12,14 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
-@WebServlet("/")
+@WebServlet("/login")
 public class LoginServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession(false);
         if (session != null && session.getAttribute("user") != null) {
-            req.getRequestDispatcher("./index.jsp").forward(req, resp);
+            resp.sendRedirect("./");
             return;
         }
 
@@ -31,7 +31,7 @@ public class LoginServlet extends HttpServlet {
         HttpSession session = req.getSession(true);
 
         if (session != null && session.getAttribute("user") != null) {
-            req.getRequestDispatcher("./index.jsp").forward(req, resp);
+            resp.sendRedirect("./");
             return;
         }
 
@@ -51,7 +51,7 @@ public class LoginServlet extends HttpServlet {
         if (user != null) {
             if (isPasswordCorrect) {
                 session.setAttribute("user", user);
-                req.getRequestDispatcher("./index.jsp").forward(req, resp);
+                resp.sendRedirect("./");
             } else {
                 //TODO error handling
                 resp.sendRedirect("./login");
@@ -66,7 +66,7 @@ public class LoginServlet extends HttpServlet {
             user = new User(username, passwordHash);
             userDao.insert(user);
             session.setAttribute("user", user);
-            req.getRequestDispatcher("./index.jsp").forward(req, resp);
+            resp.sendRedirect("./");
         }
     }
 }

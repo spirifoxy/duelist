@@ -5,10 +5,14 @@
 <web-app>
   <display-name>Duelist</display-name>
 
-  <servlet-mapping>
-    <servlet-name>default</servlet-name>
-    <url-pattern>*.css</url-pattern>
-  </servlet-mapping>
+  <filter>
+    <filter-name>SessionFilter</filter-name>
+    <filter-class>duelist.spirifoxy.com.github.filters.SessionFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>SessionFilter</filter-name>
+    <url-pattern>*</url-pattern>
+  </filter-mapping>
 
   <welcome-file-list>
     <welcome-file>duelist.spirifoxy.com.github.servlet.LoginServlet</welcome-file>

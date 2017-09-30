@@ -5,10 +5,10 @@
     <title>Авторизация</title>
 </head>
 <body>
-    <form method="POST" action="<c:url value="/"/>">
+    <form method="POST" action="<c:url value="/login"/>">
         <input placeholder="Имя пользователя" name="username" maxlength="20" type="text" required>
         <input placeholder="Пароль" name="password" maxlength="40" type="password" required>
-        <button type="submit">Войти</button>
+        <button>Войти</button>
     </form>
 </body>
 </html>
