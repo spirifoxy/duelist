@@ -16,10 +16,10 @@ public class MainServlet extends HttpServlet {
 
         HttpSession session = req.getSession(false);
         if (session.getAttribute("user") == null) {
-            resp.sendRedirect("./login");
+            resp.sendRedirect("/login");
             return;
         }
-        req.getRequestDispatcher("./index.jsp").forward(req, resp);
+        req.getRequestDispatcher("/index.jsp").forward(req, resp);
     }
 
 }

@@ -20,7 +20,7 @@ public class SessionFilter implements Filter {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
 
-        List<String> allowed = Arrays.asList("login", "favicon.ico", "css");
+        List<String> allowed = Arrays.asList("login", "favicon.ico", "css", "js");
         HttpServletRequest req = (HttpServletRequest) servletRequest;
         HttpSession session = req.getSession();
 
@@ -29,7 +29,7 @@ public class SessionFilter implements Filter {
                 allowed.contains(req.getRequestURI().split("/")[1])) {
             filterChain.doFilter(servletRequest, servletResponse);
         } else {
-            ((HttpServletResponse) servletResponse).sendRedirect("./");
+            ((HttpServletResponse) servletResponse).sendRedirect("/");
         }
     }
 

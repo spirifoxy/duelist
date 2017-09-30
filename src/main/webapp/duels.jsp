@@ -3,6 +3,7 @@
 <html>
 <head>
     <title>Дуэли</title>
+    <script src="<c:url value="/js/script.js" />"></script>
 </head>
 <body>
     <div>
@@ -10,7 +11,7 @@
             Рейтинг
         </div>
         <form method="POST" action="<c:url value="/duels"/>">
-            <button>Начать дуэль</button>
+            <button id="startDuel">Начать дуэль</button>
         </form>
     </div>
 </body>

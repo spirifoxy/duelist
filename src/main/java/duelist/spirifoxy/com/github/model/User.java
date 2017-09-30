@@ -2,17 +2,24 @@ package duelist.spirifoxy.com.github.model;
 
 public class User {
 
+    private enum UserStatus {
+        UNDEFINED, WAITING, GAMING
+    }
+
     private Integer id;
     private String username;
     private String password;
     private Integer hp;
     private Integer damage;
 
+    private UserStatus status;
+
     public User(String username, String password) {
         this(null, username, password, 100, 10);
     }
 
     public User(Integer id, String username, String password, Integer hp, Integer damage) {
+        this.status = UserStatus.UNDEFINED;
         this.id = id;
         this.username = username;
         this.password = password;
@@ -60,4 +67,11 @@ public class User {
         this.hp = hp;
     }
 
+    public UserStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(UserStatus status) {
+        this.status = status;
+    }
 }

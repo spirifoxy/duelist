@@ -19,11 +19,11 @@ public class LoginServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession(false);
         if (session != null && session.getAttribute("user") != null) {
-            resp.sendRedirect("./");
+            resp.sendRedirect("/");
             return;
         }
 
-        req.getRequestDispatcher("./login.jsp").forward(req, resp);
+        req.getRequestDispatcher("/login.jsp").forward(req, resp);
     }
 
     @Override
@@ -31,7 +31,7 @@ public class LoginServlet extends HttpServlet {
         HttpSession session = req.getSession(true);
 
         if (session != null && session.getAttribute("user") != null) {
-            resp.sendRedirect("./");
+            resp.sendRedirect("/");
             return;
         }
 
@@ -51,10 +51,10 @@ public class LoginServlet extends HttpServlet {
         if (user != null) {
             if (isPasswordCorrect) {
                 session.setAttribute("user", user);
-                resp.sendRedirect("./");
+                resp.sendRedirect("/");
             } else {
                 //TODO error handling
-                resp.sendRedirect("./login");
+                resp.sendRedirect("/login");
             }
         } else { //register new user
             String passwordHash = null;
@@ -66,7 +66,7 @@ public class LoginServlet extends HttpServlet {
             user = new User(username, passwordHash);
             userDao.insert(user);
             session.setAttribute("user", user);
-            resp.sendRedirect("./");
+            resp.sendRedirect("/");
         }
     }
 }
