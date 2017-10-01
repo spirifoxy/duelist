@@ -41,14 +41,13 @@ public class LoginServlet extends HttpServlet {
         UserDaoMysql userDao = new UserDaoMysql();
         User user = userDao.getByUsername(username);
 
-        boolean isPasswordCorrect = false;
-        try {
-            isPasswordCorrect = Utils.checkPassword(password, user.getPassword());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
         if (user != null) {
+            boolean isPasswordCorrect = false;
+            try {
+                isPasswordCorrect = Utils.checkPassword(password, user.getPassword());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             if (isPasswordCorrect) {
                 session.setAttribute("user", user);
                 resp.sendRedirect("/");
