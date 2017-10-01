@@ -34,6 +34,30 @@ public class Server {
                 : rooms.get(rooms.size()-1);
     }
 
+    public int getTimeBeforeDuel() {
+        return getLastRoom().getTimeToStart();
+    }
+
+    public void processAttack() {
+        getLastRoom().processAttack();
+    }
+
+    public User getCurrentUser(User user) {
+        return getLastRoom().getCurrentUser(user);
+    }
+
+    public User getOpponentUser(User user) {
+        return getLastRoom().getOpponentUser(user);
+    }
+
+    public Room.RoomStatus getRoomStatus() {
+        return getLastRoom().getStatus();
+    }
+
+    public void setRoomStatus(Room.RoomStatus status) {
+        getLastRoom().setStatus(status);
+    }
+
     public boolean isRoomFilled() {
 
         return (!rooms.isEmpty() && (getLastRoom().getStatus() == Room.RoomStatus.FILLED));

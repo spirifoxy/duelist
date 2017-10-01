@@ -5,7 +5,7 @@
 <html>
 <head>
     <%
-        Room room = (Room)request.getAttribute("room");
+        Room room = (Room)session.getAttribute("room");
         User currentUser = (User)session.getAttribute("user");
 //        User opponent = room.getOpponentUser(currentUser);
         User opponent = (User)session.getAttribute("opponent");
@@ -24,7 +24,8 @@
                 <div class="caption">Вы</div>
                 <div class="name"><%= currentUser.getUsername() %></div>
                 <div class="progress-bar">
-                    <div class="progress" id="userHp" style="width: <%= currentUser.getHp() %>%"> </div>
+                    <div class="progress" style="width: <%= currentUser.getHp() %>%"> </div>
+                    <div id="userHp"> <%= currentUser.getHp() %></div> <%--TODO TEMP, remove in future--%>
                 </div>
                 <div class="damage" id="userDamage"> <%= currentUser.getDamage() %> ед.ур.</div>
             </div>
@@ -36,8 +37,9 @@
                 <div class="name"><%= opponent.getUsername() %></div>
                 <div class="progress-bar">
                     <div class="progress" style="width: <%= opponent.getHp() %>%"> </div>
+                    <div id="opponentHp"><%= opponent.getHp() %></div> <%--TODO TEMP, remove in future--%>
                 </div>
-                <div class="damage"><%= opponent.getDamage() %> ед. ур.</div>
+                <div class="damage" id="opponentDamage"><%= opponent.getDamage() %> ед. ур.</div>
 
             </div>
 

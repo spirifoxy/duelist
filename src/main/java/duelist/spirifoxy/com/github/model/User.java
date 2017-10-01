@@ -1,9 +1,11 @@
 package duelist.spirifoxy.com.github.model;
 
+import java.util.Objects;
+
 public class User {
 
     private enum UserStatus {
-        UNDEFINED, WAITING, GAMING
+        UNDEFINED, WAITING, GAMING, WINNER, LOSER
     }
 
     private Integer id;
@@ -18,13 +20,13 @@ public class User {
         this(null, username, password, 100, 10);
     }
 
-    public User(Integer id, String username, String password, Integer hp, Integer damage) {
+    public User(Integer id, String username, String password, Integer damage, Integer hp) {
         this.status = UserStatus.UNDEFINED;
         this.id = id;
         this.username = username;
         this.password = password;
-        this.hp = hp;
         this.damage = damage;
+        this.hp = hp;
     }
 
     public Integer getId() {
@@ -73,5 +75,20 @@ public class User {
 
     public void setStatus(UserStatus status) {
         this.status = status;
+    }
+
+    public String toJSON() {
+        return "{" +
+                "\"id\": " + getId() + "," +
+                "\"username\": " + "\"" + getUsername() + "\"," +
+                "\"damage\": " + getDamage() + "," +
+                "\"hp\": " + getHp() +
+                "}";
+    }
+
+    public boolean equals(User user) {
+        return Objects.equals(this.username, user.getUsername())
+                && Objects.equals(this.hp, user.getHp())
+                && Objects.equals(this.damage, user.getDamage());
     }
 }
