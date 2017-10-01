@@ -1,0 +1,20 @@
+@import 'common.css';
+
+.container .rating {
+	text-align: center;
+	margin-bottom: 150px;
+}
+
+.container .rating .caption{
+	font-size: 20px;
+	margin-bottom: 10px;
+}
+	
+.container .rating .value {
+	font-size: 36px;
+}
+
+.container .start-duel {
+	width: 200px;
+	height: 100px;
+}

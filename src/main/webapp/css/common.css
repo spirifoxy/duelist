@@ -1,0 +1,38 @@
+.container {
+	width: 100vw;
+	height: 100vh;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+}
+
+.container .button {
+	-webkit-appearance: button;
+	-moz-appearance: button;
+	appearance: button;
+
+	display: block;
+}
+
+button, .button,
+input[type=submit] {
+	cursor: pointer;
+	
+	-webkit-transition: all 0.3s ease;;
+	-moz-transition: all 0.3s ease;;
+	-o-transition: all 0.3s ease;;
+	transition: all 0.3s ease;
+}
+
+button:hover, .button:hover,
+input[type=submit]:hover {
+	-webkit-transform: scale(1.2);
+	-ms-transform: scale(1.2);
+	transform: scale(1.2);
+}
+
+.footer {
+	position: absolute;
+	bottom: 10px;
+}

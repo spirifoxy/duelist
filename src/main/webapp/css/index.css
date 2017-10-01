@@ -1,8 +1,20 @@
-.button {
-    -webkit-appearance: button;
-    -moz-appearance: button;
-    appearance: button;
+@import 'common.css';
 
+.container .button.duels {
+    width: 150px;
+    height: 50px;
+    margin-bottom: 50px;
+    padding-top: 30px;
+}
+
+.container .button {
     text-decoration: none;
     color: initial;
+    text-align: center;
+}
+
+.container .button.exit {
+    width: 100px;
+    height: 40px;
+    padding-top: 20px;
 }

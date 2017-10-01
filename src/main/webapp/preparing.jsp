@@ -4,19 +4,47 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>Подготовка к бою</title>
-
     <%
         Room room = (Room)request.getAttribute("room");
-        User currentUser = (User)session.getAttribute("user");
+//        User currentUser = (User)session.getAttribute("user");
+//        User opponent = room.getOpponentUser(currentUser);
+
+        User opponent = (User)session.getAttribute("opponent");
     %>
+    <title>Подготовка к бою</title>
 
-    <% room.getOpponentUser(currentUser); %>
+    <%--<jsp:useBean id="room" scope="request" class="duelist.spirifoxy.com.github.model.Room"/>--%>
 
-    <meta http-equiv="Refresh" content="<%= room.getTimeToStart() %>; %>;url=next_page.jsp">
 
+
+    <%--<jsp:useBean id="room" scope="request" class="duelist.spirifoxy.com.github.model.Room"/>--%>
+    <%--<c:out value="${room.getOpponentUser()}" />--%>
+
+
+    <%--<% room.getOpponentUser(currentUser); %>--%>
+    <%--<meta http-equiv="Refresh" content="<% room.getTimeToStart(); %>;url=next_page.jsp">--%>
+
+
+    <%--<%  %>--%>
+
+
+    <meta http-equiv="Refresh" content="<%= room.getTimeToStart() %>;url=<c:url value="/duel"/>">
+    <script src="<c:url value="/js/script.js" />"></script>
+    <link rel="stylesheet" type="text/css" href="<c:url value="/css/preparing.css" />"/>
 </head>
 <body>
-Ожидайте...
+
+    <div class="container">
+        <div class="enemy">
+            <div class="caption">Ваш враг:</div>
+            <div class="name"><%= opponent.getUsername() %></div>
+        </div>
+        <div class="timer">
+            <div class="caption">Дуэль начнется через</div>
+            <div class="value" id="timer"><%= room.getTimeToStart() %></div>
+        </div>
+    </div>
+    <div class="footer">page: 100ms, db: 5req (20 ms)</div>
+
 </body>
 </html>

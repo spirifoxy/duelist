@@ -1,0 +1,16 @@
+@import 'common.css';
+
+.container .login-form {
+	width: 200px;
+	height: 200px;
+}
+
+.container .login-form input, button {
+	margin-bottom: 15px;
+	height: 25px;
+	width: 100%;
+}
+
+.container .login-form input[type="submit"] {
+	height: 30px;
+}

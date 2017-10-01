@@ -1,0 +1,56 @@
+@import 'common.css';
+
+.container .opponents {
+	margin-bottom: 40px;
+}
+
+.container .opponents .player,
+.container .opponents .attack-button {
+	display: inline-block;
+	border: 1px solid #000;
+	vertical-align: middle;
+	font-size: 22px;
+}
+
+.container .opponents .player {
+	width: 200px;
+    height: 250px;
+	text-align: center;
+	margin: 0 50px;
+}
+
+.container .opponents .attack-button {
+	width: 80px;
+	height: 80px;
+}
+
+.container .opponents .player .caption {
+	position: relative;
+	border-bottom: 1px solid #ccc;
+	margin-bottom: 15px;
+}
+
+.container .opponents .player .name {
+	font-size: 28px;
+	font-weight: bold;
+	margin-bottom: 40px;
+}
+
+.container .opponents .player .progress-bar {
+	border: 1px solid #000;
+	height: 20px;
+    width: 170px;
+    margin: 0 auto 20px;
+}
+
+.container .opponents .player .progress {
+	display: block;
+	background: #00f;
+	height: 20px;
+}
+
+.container .log {
+	width: 800px;
+    height: 150px;
+	border: 1px solid #000;
+}

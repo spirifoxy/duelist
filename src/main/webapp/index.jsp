@@ -6,7 +6,10 @@
     <link rel="stylesheet" type="text/css" href="<c:url value="/css/index.css" />"/>
 </head>
 <body>
-<a href="<c:url value="/duels"/>" class="button">Дуэли</a>
-<a href="<c:url value="/logout"/>" class="button">Выход</a>
+    <div class="container">
+        <a href="<c:url value="/duels"/>" class="button duels">Дуэли</a>
+        <a href="<c:url value="/logout"/>" class="button exit">Выход</a>
+    </div>
+    <div class="footer">page: 100ms, db: 5req (20 ms)</div>
 </body>
 </html>
