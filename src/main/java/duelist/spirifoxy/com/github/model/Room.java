@@ -2,22 +2,25 @@ package duelist.spirifoxy.com.github.model;
 
 import duelist.spirifoxy.com.github.main.ServerPreferences;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Timer;
+import java.util.*;
+
 public class Room {
 
     public enum RoomStatus {
-        EMPTY, WAITING, FILLED
+        EMPTY, WAITING, FILLED, FAITING
     }
 
     private RoomStatus status;
     private List<User> users;
+    private int timeBeforeDuel;
+    private Timer timerBeforeDuel;
 
 
     public Room() {
         status = RoomStatus.EMPTY;
         users = new ArrayList<>();
+        timerBeforeDuel = new Timer();
+        timeBeforeDuel = ServerPreferences.TIME_BEFORE_DUEL;
     }
 
 
@@ -34,13 +37,38 @@ public class Room {
                 break;
             case 2:
                 status = RoomStatus.FILLED;
+                timerBeforeDuel.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        if (timeBeforeDuel > 0) {
+                            timeBeforeDuel--;
+                        } else {
+                            status = RoomStatus.FAITING;
+                            timerBeforeDuel.cancel();
+                            timerBeforeDuel.purge();
+                        }
+                    }
+                }, 1000, 1000);
                 break;
             default:
                 break;
         }
     }
 
+    public User getOpponentUser(User currentUser) {
+        for (User user: users) {
+            if (!Objects.equals(user.getUsername(), currentUser.getUsername())) {
+                return user;
+            }
+        }
+        return null;
+    }
+
     public RoomStatus getStatus() {
         return status;
+    }
+
+    public int getTimeToStart() {
+        return timeBeforeDuel;
     }
 }

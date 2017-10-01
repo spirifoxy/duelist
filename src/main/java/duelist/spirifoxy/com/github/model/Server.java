@@ -28,15 +28,21 @@ public class Server {
         room.fill(user);
     }
 
+    public Room getLastRoom() {
+        return rooms.isEmpty()
+                ? null
+                : rooms.get(rooms.size()-1);
+    }
+
     public boolean isRoomFilled() {
 
-        return (!rooms.isEmpty() && (rooms.get(rooms.size()-1).getStatus() == Room.RoomStatus.FILLED));
+        return (!rooms.isEmpty() && (getLastRoom().getStatus() == Room.RoomStatus.FILLED));
     }
 
     private Room findFreeRoom() {
 
         if (rooms.isEmpty() || //if there is no room with waiting user
-                (rooms.get(rooms.size()-1).getStatus() == Room.RoomStatus.FILLED)) {
+                (getLastRoom().getStatus() == Room.RoomStatus.FILLED)) {
             rooms.add(new Room());
         }
         return rooms.get(rooms.size()-1);

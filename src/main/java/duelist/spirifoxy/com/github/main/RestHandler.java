@@ -1,5 +1,6 @@
 package duelist.spirifoxy.com.github.main;
 
+import duelist.spirifoxy.com.github.model.Room;
 import duelist.spirifoxy.com.github.model.Server;
 import duelist.spirifoxy.com.github.model.User;
 
@@ -20,9 +21,9 @@ public class RestHandler {
     public Response onConnect(@Context HttpServletRequest request) {
 
         HttpSession session = request.getSession();
-        User newPlayer = (User) session.getAttribute("user");
-        server.connectUser(newPlayer);
-        session.setAttribute("username", newPlayer.getUsername());
+        User user = (User) session.getAttribute("user");
+        server.connectUser(user);
+        session.setAttribute("username", user.getUsername());
 
         return Response.status(Response.Status.OK).entity(session.getAttribute("username").toString()).build();
     }
@@ -31,7 +32,17 @@ public class RestHandler {
     @Path("/isRoomFilled")
     public Response isRoomFilled(@Context HttpServletRequest request) {
 
-        return Response.status(Response.Status.OK).entity(Boolean.toString(server.isRoomFilled())).build();
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+
+        boolean isRoomFilled = server.isRoomFilled();
+        if (isRoomFilled) {
+            Room room = server.getLastRoom();
+            User opponent = room.getOpponentUser(user);
+            session.setAttribute("opponent", opponent);
+        }
+
+        return Response.status(Response.Status.OK).entity(Boolean.toString(isRoomFilled)).build();
     }
 
 
