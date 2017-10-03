@@ -36,7 +36,8 @@ public class Room {
             return;
         }
 
-        users.add(user);
+        User userInRoom = new User(user);
+        users.add(userInRoom);
 
         switch (users.size()) {
             case 1:
@@ -84,11 +85,21 @@ public class Room {
         return null;
     }
 
-    public void processAttack() {
+    public Boolean processAttack(User user) {
 
-        status = RoomStatus.USER_UPDATE;
+        if (status == RoomStatus.FINISHED) {
+            return false;
+        }
+
+        if (status != RoomStatus.USER_UPDATE) {
+            status = RoomStatus.USER_UPDATE;
+        }
 
         User currentUser = users.get(getCurrentTurn());
+        if (!user.equals(currentUser)) {
+            return false;
+        }
+
         int damage = ThreadLocalRandom.current().nextInt(currentUser.getDamage()-3, currentUser.getDamage()+3); //to randomize duels
 
         changeTurn();
@@ -101,6 +112,7 @@ public class Room {
             status = RoomStatus.FINISHED;
 //            finish(currentUser, opponentUser);
         }
+        return true;
 
     }
 

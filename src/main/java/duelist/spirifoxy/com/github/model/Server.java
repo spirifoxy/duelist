@@ -38,8 +38,8 @@ public class Server {
         return getLastRoom().getTimeToStart();
     }
 
-    public void processAttack() {
-        getLastRoom().processAttack();
+    public Boolean processAttack(User user) {
+        return getLastRoom().processAttack(user);
     }
 
     public User getCurrentUser(User user) {

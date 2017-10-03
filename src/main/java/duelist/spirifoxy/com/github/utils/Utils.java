@@ -45,4 +45,10 @@ public final class Utils {
     public static int getNextRoomNumber() {
         return lastRoomNumber++;
     }
+
+    public static String addParamToJSON(String json, String param) {
+        return json.substring(0, json.length()-1)
+                + ", " + param
+                + json.charAt(json.length()-1);
+    }
 }

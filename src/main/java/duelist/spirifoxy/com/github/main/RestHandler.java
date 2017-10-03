@@ -3,6 +3,7 @@ package duelist.spirifoxy.com.github.main;
 import duelist.spirifoxy.com.github.model.Room;
 import duelist.spirifoxy.com.github.model.Server;
 import duelist.spirifoxy.com.github.model.User;
+import duelist.spirifoxy.com.github.utils.Utils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -62,20 +63,25 @@ public class RestHandler {
 
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
-        server.processAttack();
+        Boolean isAttackProcessed = server.processAttack(user);
 
-        return Response.status(Response.Status.OK).entity(session.getAttribute("username").toString()).build();
+        return Response.status(Response.Status.OK).entity(Boolean.toString(isAttackProcessed)).build();
     }
 
     @GET
     @Path("/updateCurrentUserInfo")
     public Response updateCurrentUserInfo(@Context HttpServletRequest request) {
         HttpSession session = request.getSession();
-        User user = (User) session.getAttribute("user");
+        User modelUser = (User) session.getAttribute("user");
+        User userInRoom = ((Room) session.getAttribute("room")).getCurrentUser(modelUser);
 
         boolean isUpdateNeeded = server.getRoomStatus() == Room.RoomStatus.USER_UPDATE;
 
-        return Response.status(Response.Status.OK).entity(isUpdateNeeded ? user.toJSON() : "false").build();
+        //add maxHp parameter to response
+        String extraParam = "\"maxHp\": " + modelUser.getHp();
+        String userJSONInfo = Utils.addParamToJSON(userInRoom.toJSON(), extraParam);
+
+        return Response.status(Response.Status.OK).entity(isUpdateNeeded ? userJSONInfo : "false").build();
     }
 
 
@@ -84,11 +90,16 @@ public class RestHandler {
     public Response updateOpponentUserInfo(@Context HttpServletRequest request) {
         HttpSession session = request.getSession();
 
-        User opponent = (User) session.getAttribute("opponent");
+        User modelUser = (User) session.getAttribute("user");
+        User opponentInRoom = ((Room) session.getAttribute("room")).getOpponentUser(modelUser);
 
         boolean isUpdateNeeded = server.getRoomStatus() == Room.RoomStatus.USER_UPDATE;
 
-        return Response.status(Response.Status.OK).entity(isUpdateNeeded ? opponent.toJSON() : "false").build();
+        //add maxHp parameter to response
+        String extraParam = "\"maxHp\": " + modelUser.getHp();
+        String opponentJSONInfo = Utils.addParamToJSON(opponentInRoom.toJSON(), extraParam);
+
+        return Response.status(Response.Status.OK).entity(isUpdateNeeded ? opponentJSONInfo : "false").build();
     }
 
     /*

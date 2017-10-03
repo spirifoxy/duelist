@@ -21,6 +21,10 @@ public class User {
         this(null, username, password, 100, 10);
     }
 
+    public User(User user) {
+        this(user.getId(), user.getUsername(), user.getPassword(), user.getDamage(), user.getHp());
+    }
+
     public User(Integer id, String username, String password, Integer damage, Integer hp) {
 
         this.status = UserStatus.UNDEFINED;
@@ -99,8 +103,6 @@ public class User {
     }
 
     public boolean equals(User user) {
-        return Objects.equals(this.username, user.getUsername())
-                && Objects.equals(this.hp, user.getHp())
-                && Objects.equals(this.damage, user.getDamage());
+        return Objects.equals(this.username, user.getUsername());
     }
 }
