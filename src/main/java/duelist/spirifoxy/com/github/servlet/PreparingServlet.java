@@ -23,9 +23,6 @@ public class PreparingServlet extends HttpServlet {
         }
 
         Server server = Server.getInstance();
-        Room room = server.getLastRoom(); // TODO implement search room by user
-
-        req.setAttribute("room", room);
         req.getRequestDispatcher("/preparing.jsp").forward(req, resp);
     }
 

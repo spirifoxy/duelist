@@ -39,6 +39,7 @@ public class RestHandler {
         if (isRoomFilled) {
             Room room = server.getLastRoom();
             User opponent = room.getOpponentUser(user);
+            session.setAttribute("room", room);
             session.setAttribute("opponent", opponent);
         }
 

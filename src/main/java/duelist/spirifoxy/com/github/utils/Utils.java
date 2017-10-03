@@ -14,6 +14,8 @@ public final class Utils {
     private static final int saltLength = 32;
     private static final int keyLength = 256;
 
+    private static int lastRoomNumber = 1;
+
     public static boolean checkPassword(String password, String stored) throws Exception{
         String[] saltAndPass = stored.split("\\$");
         if (saltAndPass.length != 2) {
@@ -38,5 +40,9 @@ public final class Utils {
                 new PBEKeySpec(password.toCharArray(), salt, iterations, keyLength)
         );
         return Base64.encodeBase64String(key.getEncoded());
+    }
+
+    public static int getNextRoomNumber() {
+        return lastRoomNumber++;
     }
 }

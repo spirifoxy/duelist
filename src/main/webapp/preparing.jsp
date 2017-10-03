@@ -5,28 +5,10 @@
 <html>
 <head>
     <%
-        Room room = (Room)request.getAttribute("room");
-//        User currentUser = (User)session.getAttribute("user");
-//        User opponent = room.getOpponentUser(currentUser);
-
+        Room room = (Room)session.getAttribute("room");
         User opponent = (User)session.getAttribute("opponent");
     %>
     <title>Подготовка к бою</title>
-
-    <%--<jsp:useBean id="room" scope="request" class="duelist.spirifoxy.com.github.model.Room"/>--%>
-
-
-
-    <%--<jsp:useBean id="room" scope="request" class="duelist.spirifoxy.com.github.model.Room"/>--%>
-    <%--<c:out value="${room.getOpponentUser()}" />--%>
-
-
-    <%--<% room.getOpponentUser(currentUser); %>--%>
-    <%--<meta http-equiv="Refresh" content="<% room.getTimeToStart(); %>;url=next_page.jsp">--%>
-
-
-    <%--<%  %>--%>
-
 
     <meta http-equiv="Refresh" content="<%= room.getTimeToStart() %>;url=<c:url value="/duel"/>">
     <script src="<c:url value="/js/script.js" />"></script>

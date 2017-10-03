@@ -7,18 +7,17 @@
     <%
         Room room = (Room)session.getAttribute("room");
         User currentUser = (User)session.getAttribute("user");
-//        User opponent = room.getOpponentUser(currentUser);
         User opponent = (User)session.getAttribute("opponent");
     %>
 
     <title>Дуэль с  <%= opponent.getUsername() %></title>
-
     <script src="<c:url value="/js/script.js" />"></script>
     <link rel="stylesheet" type="text/css" href="<c:url value="/css/duel.css" />"/>
 </head>
 <body>
 
     <div class="container">
+        <div>Комната № <%= room.getId() %></div>
         <div class="opponents">
             <div class="player">
                 <div class="caption">Вы</div>

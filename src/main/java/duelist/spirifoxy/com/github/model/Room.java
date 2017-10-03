@@ -1,6 +1,7 @@
 package duelist.spirifoxy.com.github.model;
 
 import duelist.spirifoxy.com.github.main.ServerPreferences;
+import duelist.spirifoxy.com.github.utils.Utils;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
@@ -11,6 +12,7 @@ public class Room {
         EMPTY, WAITING, FILLED, FIGHTING, USER_UPDATE, FINISHED
     }
 
+    private int id;
     private RoomStatus status;
     private List<User> users;
     private int timeBeforeDuel;
@@ -19,6 +21,8 @@ public class Room {
 
 
     public Room() {
+
+        id = Utils.getNextRoomNumber();
         currentTurn = ThreadLocalRandom.current().nextInt(0,2);
         status = RoomStatus.EMPTY;
         users = new ArrayList<>();
@@ -56,6 +60,10 @@ public class Room {
             default:
                 break;
         }
+    }
+
+    public int getId() {
+        return id;
     }
 
     public User getCurrentUser(User currentUser) {

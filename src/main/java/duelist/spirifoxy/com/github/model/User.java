@@ -15,13 +15,17 @@ public class User {
     private Integer damage;
 
     private UserStatus status;
+    private Integer roomId;
 
     public User(String username, String password) {
         this(null, username, password, 100, 10);
     }
 
     public User(Integer id, String username, String password, Integer damage, Integer hp) {
+
         this.status = UserStatus.UNDEFINED;
+        this.roomId = null;
+
         this.id = id;
         this.username = username;
         this.password = password;
@@ -75,6 +79,14 @@ public class User {
 
     public void setStatus(UserStatus status) {
         this.status = status;
+    }
+
+    public Integer getRoomId() {
+        return roomId;
+    }
+
+    public void setRoomId(Integer roomId) {
+        this.roomId = roomId;
     }
 
     public String toJSON() {
