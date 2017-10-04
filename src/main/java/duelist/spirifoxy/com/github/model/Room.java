@@ -85,19 +85,19 @@ public class Room {
         return null;
     }
 
-    public Boolean processAttack(User user) {
+    public boolean processAttack(User user) {
 
-        if (status == RoomStatus.FINISHED) {
+        if (status != RoomStatus.FIGHTING) {
             return false;
-        }
-
-        if (status != RoomStatus.USER_UPDATE) {
-            status = RoomStatus.USER_UPDATE;
         }
 
         User currentUser = users.get(getCurrentTurn());
         if (!user.equals(currentUser)) {
             return false;
+        }
+
+        if (status != RoomStatus.USER_UPDATE) {
+            status = RoomStatus.USER_UPDATE;
         }
 
         int damage = ThreadLocalRandom.current().nextInt(currentUser.getDamage()-3, currentUser.getDamage()+3); //to randomize duels
@@ -110,7 +110,6 @@ public class Room {
 
         if (opponentUser.getHp() <= 0) {
             status = RoomStatus.FINISHED;
-//            finish(currentUser, opponentUser);
         }
         return true;
 
@@ -138,5 +137,9 @@ public class Room {
 
     public int getCurrentTurn() {
         return currentTurn;
+    }
+
+    public boolean isNowUsersTurn(User user) {
+        return getUserNumber(getCurrentUser(user)) == getCurrentTurn();
     }
 }

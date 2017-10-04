@@ -38,7 +38,7 @@ public class Server {
         return getLastRoom().getTimeToStart();
     }
 
-    public Boolean processAttack(User user) {
+    public boolean processAttack(User user) {
         return getLastRoom().processAttack(user);
     }
 
@@ -70,6 +70,10 @@ public class Server {
             rooms.add(new Room());
         }
         return rooms.get(rooms.size()-1);
+    }
+
+    public boolean isNowUsersTurn(User user) {
+        return getLastRoom().isNowUsersTurn(user);
     }
 
 }

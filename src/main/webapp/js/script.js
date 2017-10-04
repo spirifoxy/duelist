@@ -23,6 +23,9 @@ function performScript() {
     var timer = document.getElementById("timer");
     var attackButton = document.getElementById("attack");
 
+    var resultsModal = document.getElementById("resultsModal");
+    var closeResultsModal = document.getElementById("closeResultsModal");
+
     var userHp = document.getElementById("userHp");
     var userDamage = document.getElementById("userDamage");
     var opponentHp = document.getElementById("opponentHp");
@@ -40,9 +43,7 @@ function performScript() {
 
             client.request('/rest/onConnect', function(username) {
                 setInterval(function () {
-                    // console.log(username);
                     client.request('/rest/isRoomFilled', function(isRoomFilled) {
-                        console.log(isRoomFilled);
                         if (isRoomFilled === "true") {
                             window.location.href = "/preparing";
                         }
@@ -55,36 +56,81 @@ function performScript() {
     if (timer !== null) {
         setInterval(function () {
             client.request('/rest/timeBeforeDuel', function(timeBeforeDuel) {
-                timer.innerHTML = timeBeforeDuel;
+                timer.innerHTML = timeBeforeDuel; //TODO
             }, "GET");
         }, 1000);
     }
 
     if (attackButton !== null) {
+
+        closeResultsModal.onclick = function() {
+            resultsModal.style.display = "none";
+        };
+
+        //check current turn
+        //if it's ours - wait for attack button is clicked
+        //if it's not - listen to updates
+        client.request('/rest/isNowCurrentUserTurn', function(response) {
+            if (response === "true") {
+                attackButton.disabled = false;
+            } else {
+                attackButton.disabled = true;
+                listenForCurrentUserUpdates();
+            }
+        }, "GET");
+
         attackButton.onclick = function () {
+            attackButton.disabled = true;
 
             client.request('/rest/attack', function(response) {
-                console.log("attack: " + response );
+                if (response === "true") { //if user has attacked opponent successfully
+
+                    client.request('/rest/updateUserInfo/?type=opponent', function(opponentUserInfo) {
+                        var isGameFinished = "";
+                        if (opponentUserInfo !== "false") {
+                            var parsedInfo = JSON.parse(opponentUserInfo);
+                            opponentHp.innerHTML = parsedInfo["hp"];
+                            opponentHp.style.width = parsedInfo["hp"] * 100 / parsedInfo["maxHp"] + "%";
+
+                            isGameFinished = parsedInfo["isLastTurn"]; //TODO to second write it either
+                        }
+
+                        if (isGameFinished !== true) {
+                            listenForCurrentUserUpdates();
+                        } else {
+                            resultsModal.style.display = "block";
+                        }
+                    }, "GET");
+                } else {
+                    //error during attack handling
+                }
             });
         };
 
-        setInterval(function () {
-            client.request('/rest/updateCurrentUserInfo', function(currentUserInfo) {
+        var listenForCurrentUserUpdates = function () {
+            var updateListener = setInterval(function () {
+                client.request('/rest/updateUserInfo/?type=user', function(currentUserInfo) {
 
-                if (currentUserInfo !== "false") {
-                    var parsedInfo = JSON.parse(currentUserInfo);
-                    userHp.innerHTML = parsedInfo["hp"];
-                }
+                    var isGameFinished = "";
+                    if (currentUserInfo !== "false") {
+                        var parsedInfo = JSON.parse(currentUserInfo);
+                        userHp.innerHTML = parsedInfo["hp"];
+                        userHp.style.width = parsedInfo["hp"] * 100 / parsedInfo["maxHp"] + "%";
 
-            }, "GET");
+                        window.clearInterval(updateListener);
+                        isGameFinished = parsedInfo["isLastTurn"];
+                        if (isGameFinished === true) {
+                            attackButton.disabled = true;
+                            resultsModal.style.display = "block";
 
-            client.request('/rest/updateOpponentUserInfo', function(opponentUserInfo) {
+                        } else {
+                            attackButton.disabled = false;
+                        }
+                    }
+                }, "GET");
+            }, 1000);
+        };
 
-                if (opponentUserInfo !== "false") {
-                    var parsedInfo = JSON.parse(opponentUserInfo);
-                    opponentHp.innerHTML = parsedInfo["hp"];
-                }
-            }, "GET");
-        }, 1000);
+
     }
 }

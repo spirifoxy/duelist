@@ -23,20 +23,20 @@
                 <div class="caption">Вы</div>
                 <div class="name"><%= currentUser.getUsername() %></div>
                 <div class="progress-bar">
-                    <div class="progress" style="width: <%= currentUser.getHp() %>%" id="userHp">
+                    <div class="progress" style="width: 100%" id="userHp">
                         <%= currentUser.getHp() %>
                     </div>
                 </div>
                 <div class="damage" id="userDamage"> <%= currentUser.getDamage() %> ед.ур.</div>
             </div>
 
-            <button class="attack-button" id="attack">ATK</button>
+            <button class="attack-button" id="attack" disabled>ATK</button>
 
             <div class="player">
                 <div class="caption">Враг</div>
                 <div class="name"><%= opponent.getUsername() %></div>
                 <div class="progress-bar">
-                    <div class="progress" style="width: <%= opponent.getHp() %>%" id="opponentHp">
+                    <div class="progress" style="width: 100%" id="opponentHp">
                         <%= opponent.getHp() %>
                     </div>
                 </div>
@@ -49,6 +49,39 @@
         <div class="log">
         </div>
     </div>
+
+    <div id="resultsModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeResultsModal">&times;</span>
+            <div class="result">
+                Победа!
+            </div>
+
+            <div class="stats">
+                <div class="stat">
+                    <div class="name">Рейтинг</div>
+                    <div class="value">+1</div>
+                </div>
+
+                <div class="stat">
+                    <div class="name">Урон</div>
+                    <div class="value">+1</div>
+                </div>
+
+                <div class="stat">
+                    <div class="name">Здоровье</div>
+                    <div class="value">+1</div>
+                </div>
+            </div>
+
+            <div class="buttons-wrapper">
+                <a href="<c:url value="/duels"/>" class="button">Дуэли</a>
+                <a href="<c:url value="/"/>" class="button">Главная</a>
+            </div>
+
+        </div>
+    </div>
+
     <div class="footer">page: 100ms, db: 5req (20 ms)</div>
 </body>
 </html>

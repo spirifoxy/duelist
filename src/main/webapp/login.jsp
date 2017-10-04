@@ -7,9 +7,15 @@
 </head>
 <body>
     <div class="container">
+
+        <%--<%=request.getAttribute("errorMessage")%>--%>
+
         <form class="login-form" method="POST" action="<c:url value="/login"/>">
             <input placeholder="Имя пользователя" name="username" maxlength="20" type="text" required>
             <input placeholder="Пароль" name="password" maxlength="40" type="password" required>
+            <% if (request.getAttribute("errorMessage") != null) { %>
+                <div class="error"><%= request.getAttribute("errorMessage") %></div>
+            <% } %>
             <button>Войти</button>
         </form>
     </div>

@@ -52,8 +52,8 @@ public class LoginServlet extends HttpServlet {
                 session.setAttribute("user", user);
                 resp.sendRedirect("/");
             } else {
-                //TODO error handling
-                resp.sendRedirect("/login");
+                req.setAttribute("errorMessage", "Неверный пароль");
+                req.getRequestDispatcher("/login.jsp").forward(req, resp);
             }
         } else { //register new user
             String passwordHash = null;

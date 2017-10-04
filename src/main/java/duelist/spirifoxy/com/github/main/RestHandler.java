@@ -10,8 +10,10 @@ import javax.servlet.http.HttpSession;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
+import java.util.Objects;
 
 @Path("/")
 public class RestHandler {
@@ -63,43 +65,48 @@ public class RestHandler {
 
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
-        Boolean isAttackProcessed = server.processAttack(user);
+        boolean isAttackProcessed = server.processAttack(user);
 
         return Response.status(Response.Status.OK).entity(Boolean.toString(isAttackProcessed)).build();
     }
 
     @GET
-    @Path("/updateCurrentUserInfo")
-    public Response updateCurrentUserInfo(@Context HttpServletRequest request) {
+    @Path("/updateUserInfo")
+    public Response updateCurrentUserInfo(@Context HttpServletRequest request, @QueryParam("type") String userType) {
         HttpSession session = request.getSession();
+
         User modelUser = (User) session.getAttribute("user");
-        User userInRoom = ((Room) session.getAttribute("room")).getCurrentUser(modelUser);
+        Room room = (Room) session.getAttribute("room");
+        User userInRoom = Objects.equals(userType, "opponent")
+                ? room.getOpponentUser(modelUser)
+                : room.getCurrentUser(modelUser);
 
         boolean isUpdateNeeded = server.getRoomStatus() == Room.RoomStatus.USER_UPDATE;
+        boolean isGameFinished = server.getRoomStatus() == Room.RoomStatus.FINISHED;
 
-        //add maxHp parameter to response
-        String extraParam = "\"maxHp\": " + modelUser.getHp();
-        String userJSONInfo = Utils.addParamToJSON(userInRoom.toJSON(), extraParam);
+        String response;
+        if (isUpdateNeeded || isGameFinished) {
+            response = Utils.addParamToJSON(userInRoom.toJSON(), "\"maxHp\": " + modelUser.getHp());
 
-        return Response.status(Response.Status.OK).entity(isUpdateNeeded ? userJSONInfo : "false").build();
+            if (isUpdateNeeded && Objects.equals(userType, "user")) {
+                room.setStatus(Room.RoomStatus.FIGHTING);
+            }
+            if (isGameFinished) {
+                response = Utils.addParamToJSON(userInRoom.toJSON(), "\"isLastTurn\": true");
+            }
+        } else {
+            response = "false";
+        }
+        return Response.status(Response.Status.OK).entity(response).build();
     }
 
-
     @GET
-    @Path("/updateOpponentUserInfo")
-    public Response updateOpponentUserInfo(@Context HttpServletRequest request) {
+    @Path("/isNowCurrentUserTurn")
+    public Response isNowCurrentUserTurn(@Context HttpServletRequest request) {
         HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
 
-        User modelUser = (User) session.getAttribute("user");
-        User opponentInRoom = ((Room) session.getAttribute("room")).getOpponentUser(modelUser);
-
-        boolean isUpdateNeeded = server.getRoomStatus() == Room.RoomStatus.USER_UPDATE;
-
-        //add maxHp parameter to response
-        String extraParam = "\"maxHp\": " + modelUser.getHp();
-        String opponentJSONInfo = Utils.addParamToJSON(opponentInRoom.toJSON(), extraParam);
-
-        return Response.status(Response.Status.OK).entity(isUpdateNeeded ? opponentJSONInfo : "false").build();
+        return Response.status(Response.Status.OK).entity(Boolean.toString(server.isNowUsersTurn(user))).build();
     }
 
     /*

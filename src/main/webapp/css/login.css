@@ -14,3 +14,10 @@
 .container .login-form input[type="submit"] {
 	height: 30px;
 }
+
+.error {
+	color: #f00;
+	font-size: 12px;
+	margin-top: -12px;
+	margin-bottom: 12px;
+}
