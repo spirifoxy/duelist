@@ -1,5 +1,6 @@
 package duelist.spirifoxy.com.github.main;
 
+import duelist.spirifoxy.com.github.db.UserDaoMysql;
 import duelist.spirifoxy.com.github.model.Room;
 import duelist.spirifoxy.com.github.model.Server;
 import duelist.spirifoxy.com.github.model.User;
@@ -26,9 +27,8 @@ public class RestHandler {
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
         server.connectUser(user);
-        session.setAttribute("username", user.getUsername());
 
-        return Response.status(Response.Status.OK).entity(session.getAttribute("username").toString()).build();
+        return Response.status(Response.Status.OK).entity(user.getUsername()).build();
     }
 
     @GET
@@ -38,10 +38,10 @@ public class RestHandler {
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
 
-        boolean isRoomFilled = server.isRoomFilled();
+        boolean isRoomFilled = server.isRoomFilled(user.getRoomId());
         if (isRoomFilled) {
-            Room room = server.getLastRoom();
-            User opponent = room.getOpponentUser(user);
+            Room room = server.getNewestRoom();
+            User opponent = new User(room.getOpponentUser(user));
             session.setAttribute("room", room);
             session.setAttribute("opponent", opponent);
         }
@@ -53,8 +53,9 @@ public class RestHandler {
     @Path("/timeBeforeDuel")
     public Response getTimeBeforeDuel(@Context HttpServletRequest request) {
         HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
 
-        int time = server.getTimeBeforeDuel();
+        int time = server.getTimeBeforeDuel(user.getRoomId());
 
         return Response.status(Response.Status.OK).entity(Integer.toString(time)).build();
     }
@@ -81,8 +82,8 @@ public class RestHandler {
                 ? room.getOpponentUser(modelUser)
                 : room.getCurrentUser(modelUser);
 
-        boolean isUpdateNeeded = server.getRoomStatus() == Room.RoomStatus.USER_UPDATE;
-        boolean isGameFinished = server.getRoomStatus() == Room.RoomStatus.FINISHED;
+        boolean isUpdateNeeded = server.getRoomStatus(room.getId()) == Room.RoomStatus.USER_UPDATE; //TODO ??WHY?
+        boolean isGameFinished = server.getRoomStatus(room.getId()) == Room.RoomStatus.FINISHED;
 
         String response;
         if (isUpdateNeeded || isGameFinished) {
@@ -109,13 +110,37 @@ public class RestHandler {
         return Response.status(Response.Status.OK).entity(Boolean.toString(server.isNowUsersTurn(user))).build();
     }
 
-    /*
-
     @GET
-    @Path("/")
-    public Response isRoomFilled(@Context HttpServletRequest request) {
+    @Path("/winner")
+    public Response getWinner(@Context HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
 
+        User winner = server.getWinner(user.getRoomId());
+        return Response.status(Response.Status.OK).entity(winner).build();
     }
 
-    */
+    @POST
+    @Path("/updateUsersAfterGame")
+    public Response updateUserAfterGame(@Context HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+        User winner = server.getWinner(user.getRoomId());
+
+        boolean isUserWinner = user.equals(winner);
+        if (isUserWinner) {
+            user.setStatus(User.UserStatus.WINNER);
+        } else {
+            user.setStatus(User.UserStatus.LOSER);
+        }
+
+        UserDaoMysql userDao = new UserDaoMysql();
+        userDao.update(user);
+
+        user.update(isUserWinner);
+        session.setAttribute("isWinner", isUserWinner);
+
+        return Response.status(Response.Status.OK).entity(Boolean.toString(isUserWinner)).build();
+    }
+
 }

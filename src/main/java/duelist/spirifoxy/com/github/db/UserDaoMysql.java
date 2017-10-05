@@ -1,5 +1,6 @@
 package duelist.spirifoxy.com.github.db;
 
+import duelist.spirifoxy.com.github.model.Room;
 import duelist.spirifoxy.com.github.model.User;
 
 import java.sql.Connection;
@@ -33,7 +34,8 @@ public class UserDaoMysql implements CommonDao<User> {
                             resultSet.getString(2),
                             resultSet.getString(3),
                             resultSet.getInt(4),
-                            resultSet.getInt(5)
+                            resultSet.getInt(5),
+                            resultSet.getInt(6)
                     );
                 }
             }
@@ -64,7 +66,33 @@ public class UserDaoMysql implements CommonDao<User> {
 
     @Override
     public void update(User user) {
+        if (user == null) {
+            throw new IllegalArgumentException("Ошибка при обновлении пользователя");
+        }
 
+        if (user.getStatus() != User.UserStatus.WINNER && user.getStatus() != User.UserStatus.LOSER)
+        {
+            throw new IllegalArgumentException("Ошибка при обновлении пользователя");
+        }
+
+        String updateRating;
+        if (user.getStatus() == User.UserStatus.WINNER) {
+            updateRating = "+ 1";
+        } else if (user.getStatus() == User.UserStatus.LOSER) {
+            updateRating = user.getRating() > 0 ? "- 1" : "";
+        } else {
+            updateRating = "";
+        }
+
+        String query = "update users set rating = rating " + updateRating + ", hp = hp + 1, damage = damage + 1 where username = ?";
+        try (Connection connection = ConnectionManager.connect();
+            PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, user.getUsername());
+            statement.executeUpdate();
+            user.setStatus(User.UserStatus.UNDEFINED);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -82,7 +110,8 @@ public class UserDaoMysql implements CommonDao<User> {
                         resultSet.getString(2),
                         resultSet.getString(3),
                         resultSet.getInt(4),
-                        resultSet.getInt(5)
+                        resultSet.getInt(5),
+                        resultSet.getInt(6)
                 ));
             }
         } catch (SQLException e) {

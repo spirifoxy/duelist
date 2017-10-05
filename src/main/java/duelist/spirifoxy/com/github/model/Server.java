@@ -3,6 +3,8 @@ package duelist.spirifoxy.com.github.model;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Server {
 
@@ -10,6 +12,18 @@ public class Server {
 
     private Server() {
         rooms = new ArrayList<>();
+
+        //TODO remove
+
+        final Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run(){
+                for(Room room:rooms) {
+//                    System.out.println(room.id + " + users: " + room.users.size());
+                }
+            }
+        }, 2000, 2000);
     }
 
     private static class ServerHelper {
@@ -26,54 +40,80 @@ public class Server {
 
         Room room = findFreeRoom();
         room.fill(user);
+        System.out.println(room);
     }
 
-    public Room getLastRoom() {
-        return rooms.isEmpty()
-                ? null
-                : rooms.get(rooms.size()-1);
-    }
-
-    public int getTimeBeforeDuel() {
-        return getLastRoom().getTimeToStart();
+    public int getTimeBeforeDuel(int id) {
+        return findRoomById(id).getTimeToStart();
     }
 
     public boolean processAttack(User user) {
-        return getLastRoom().processAttack(user);
+        return findRoomById(user.getRoomId()).processAttack(user);
     }
 
-    public User getCurrentUser(User user) {
+    /*public User getCurrentUser(User user) {
         return getLastRoom().getCurrentUser(user);
     }
 
     public User getOpponentUser(User user) {
         return getLastRoom().getOpponentUser(user);
+    }*/
+
+    public Room.RoomStatus getRoomStatus(int id) {
+        return findRoomById(id).getStatus();
     }
 
-    public Room.RoomStatus getRoomStatus() {
-        return getLastRoom().getStatus();
+    public void setRoomStatus(int id, Room.RoomStatus status) {
+        findRoomById(id).setStatus(status);
     }
 
-    public void setRoomStatus(Room.RoomStatus status) {
-        getLastRoom().setStatus(status);
+    public boolean isRoomFilled(int id) {
+
+        return (!rooms.isEmpty() && (findRoomById(id).getStatus() == Room.RoomStatus.FILLED));
     }
 
-    public boolean isRoomFilled() {
-
-        return (!rooms.isEmpty() && (getLastRoom().getStatus() == Room.RoomStatus.FILLED));
+    public boolean isNowUsersTurn(User user) {
+        return findRoomById(user.getRoomId()).isNowUsersTurn(user);
     }
 
     private Room findFreeRoom() {
 
         if (rooms.isEmpty() || //if there is no room with waiting user
-                (getLastRoom().getStatus() == Room.RoomStatus.FILLED)) {
+                (getNewestRoom().getStatus() != Room.RoomStatus.WAITING)) {
             rooms.add(new Room());
         }
-        return rooms.get(rooms.size()-1);
+        return getNewestRoom();
     }
 
-    public boolean isNowUsersTurn(User user) {
-        return getLastRoom().isNowUsersTurn(user);
+    public Room getNewestRoom() {
+        return rooms.isEmpty()
+                ? null
+                : rooms.get(rooms.size()-1);
+    }
+
+    public Room findRoomById(int id) {
+        for (Room room: rooms) {
+            if (room.getId() == id)
+                return room;
+        }
+        return null;
+    }
+
+    public User getWinner(int roomId) {
+        Room room = findRoomById(roomId);
+        System.out.println("room status " + room.getStatus());
+        if (room.getStatus() != Room.RoomStatus.FINISHED) {
+            return null;
+        }
+        return room.getWinner();
+    }
+
+    public User getLoser(int roomId) {
+        Room room = findRoomById(roomId);
+        if (room.getStatus() != Room.RoomStatus.FINISHED) {
+            return null;
+        }
+        return room.getLoser();
     }
 
 }

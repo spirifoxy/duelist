@@ -1,3 +1,4 @@
+<%@ page import="duelist.spirifoxy.com.github.model.User" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
@@ -10,7 +11,7 @@
     <div class="container">
         <div class="rating">
             <div class="caption">Ваш рейтинг:</div>
-            <div class="value">0</div>
+            <div class="value"><%= ((User)session.getAttribute("user")).getRating() %></div>
         </div>
         <button class="start-duel" id="startDuel">Начать дуэль</button>
     </div>

@@ -36,6 +36,7 @@ public class Room {
             return;
         }
 
+        user.setRoomId(id);
         User userInRoom = new User(user);
         users.add(userInRoom);
 
@@ -109,6 +110,8 @@ public class Room {
 
 
         if (opponentUser.getHp() <= 0) {
+            currentUser.setStatus(User.UserStatus.WINNER);
+            opponentUser.setStatus(User.UserStatus.LOSER);
             status = RoomStatus.FINISHED;
         }
         return true;
@@ -141,5 +144,26 @@ public class Room {
 
     public boolean isNowUsersTurn(User user) {
         return getUserNumber(getCurrentUser(user)) == getCurrentTurn();
+    }
+
+    public User getWinner() {
+        for (User user:users) {
+
+            System.out.println(user.getStatus());
+
+            if (user.getStatus() == User.UserStatus.WINNER) {
+                return user;
+            }
+        }
+        return null;
+    }
+
+    public User getLoser() {
+        for (User user:users) {
+            if (user.getStatus() == User.UserStatus.LOSER) {
+                return user;
+            }
+        }
+        return null;
     }
 }

@@ -90,7 +90,7 @@ function performScript() {
                         if (opponentUserInfo !== "false") {
                             var parsedInfo = JSON.parse(opponentUserInfo);
                             opponentHp.innerHTML = parsedInfo["hp"];
-                            opponentHp.style.width = parsedInfo["hp"] * 100 / parsedInfo["maxHp"] + "%";
+                            opponentHp.style.width = parsedInfo["hp"] ? (parsedInfo["hp"] * 100 / parsedInfo["maxHp"]) : 0 + "%";
 
                             isGameFinished = parsedInfo["isLastTurn"]; //TODO to second write it either
                         }
@@ -98,7 +98,12 @@ function performScript() {
                         if (isGameFinished !== true) {
                             listenForCurrentUserUpdates();
                         } else {
-                            resultsModal.style.display = "block";
+                            client.request('/rest/updateUsersAfterGame', function(isCurrentUserWinner) {
+                                console.log(isCurrentUserWinner);
+                                resultsModal.getElementsByClassName("result")[0].innerHTML = "Победа!";
+                                resultsModal.style.display = "block";
+
+                            });
                         }
                     }, "GET");
                 } else {
@@ -115,14 +120,19 @@ function performScript() {
                     if (currentUserInfo !== "false") {
                         var parsedInfo = JSON.parse(currentUserInfo);
                         userHp.innerHTML = parsedInfo["hp"];
-                        userHp.style.width = parsedInfo["hp"] * 100 / parsedInfo["maxHp"] + "%";
+                        console.log(parsedInfo["hp"]);
+                        console.log(parsedInfo["maxHp"]);
+                        userHp.style.width = parsedInfo["hp"] ? (parsedInfo["hp"] * 100 / parsedInfo["maxHp"]) : 0 + "%";
 
                         window.clearInterval(updateListener);
                         isGameFinished = parsedInfo["isLastTurn"];
                         if (isGameFinished === true) {
                             attackButton.disabled = true;
-                            resultsModal.style.display = "block";
-
+                            client.request('/rest/updateUsersAfterGame', function(isCurrentUserWinner) {
+                                console.log(isCurrentUserWinner);
+                                resultsModal.getElementsByClassName("result")[0].innerHTML = "Поражение";
+                                resultsModal.style.display = "block";
+                            });
                         } else {
                             attackButton.disabled = false;
                         }

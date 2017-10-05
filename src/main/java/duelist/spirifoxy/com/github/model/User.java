@@ -4,7 +4,7 @@ import java.util.Objects;
 
 public class User {
 
-    private enum UserStatus {
+    public enum UserStatus {
         UNDEFINED, WAITING, GAMING, WINNER, LOSER
     }
 
@@ -13,28 +13,34 @@ public class User {
     private String password;
     private Integer hp;
     private Integer damage;
+    private Integer rating;
 
     private UserStatus status;
     private Integer roomId;
 
     public User(String username, String password) {
-        this(null, username, password, 100, 10);
+        this(null, username, password, 10, 100, 0, UserStatus.UNDEFINED,null);
     }
 
     public User(User user) {
-        this(user.getId(), user.getUsername(), user.getPassword(), user.getDamage(), user.getHp());
+        this(user.getId(), user.getUsername(), user.getPassword(), user.getDamage(), user.getHp(), user.getRating(), user.getStatus(), user.getRoomId());
     }
 
-    public User(Integer id, String username, String password, Integer damage, Integer hp) {
+    public User(Integer id, String username, String password, Integer damage, Integer hp, Integer rating) {
+        this(null, username, password, damage, hp, rating, UserStatus.UNDEFINED, null);
+    }
 
-        this.status = UserStatus.UNDEFINED;
-        this.roomId = null;
+    public User(Integer id, String username, String password, Integer damage, Integer hp, Integer rating, UserStatus status, Integer roomId) {
+
+        this.status = status;
+        this.roomId = roomId;
 
         this.id = id;
         this.username = username;
         this.password = password;
         this.damage = damage;
         this.hp = hp;
+        this.rating = rating;
     }
 
     public Integer getId() {
@@ -93,6 +99,14 @@ public class User {
         this.roomId = roomId;
     }
 
+    public Integer getRating() {
+        return rating;
+    }
+
+    public void setRating(Integer rating) {
+        this.rating = rating;
+    }
+
     public String toJSON() {
         return "{" +
                 "\"id\": " + getId() + "," +
@@ -104,5 +118,11 @@ public class User {
 
     public boolean equals(User user) {
         return Objects.equals(this.username, user.getUsername());
+    }
+
+    public void update(boolean isUserWinner) {
+        hp += 1;
+        damage += 1;
+        rating += isUserWinner ? 1 : -1;
     }
 }
