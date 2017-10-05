@@ -8,6 +8,6 @@ public final class ServerPreferences {
     public static final String DB_PASSWORD = "";
     public static final String DB_DRIVER = "com.mysql.jdbc.Driver";
 
-    public static final int TIME_BEFORE_DUEL = 5;
+    public static final int TIME_BEFORE_DUEL = 60;
 
 }
