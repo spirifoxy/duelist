@@ -52,7 +52,7 @@
 
         </div>
 
-        <div class="log">
+        <div class="log" id="log">
         </div>
     </div>
 
@@ -69,6 +69,5 @@
         </div>
     </div>
 
-    <div class="footer">page: 100ms, db: 5req (20 ms)</div>
 </body>
 </html>

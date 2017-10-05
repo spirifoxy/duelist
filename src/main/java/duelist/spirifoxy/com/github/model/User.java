@@ -124,5 +124,8 @@ public class User {
         hp += 1;
         damage += 1;
         rating += isUserWinner ? 1 : -1;
+        if (rating < 0) {
+            rating = 0;
+        }
     }
 }

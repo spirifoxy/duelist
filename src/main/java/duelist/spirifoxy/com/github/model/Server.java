@@ -13,17 +13,6 @@ public class Server {
     private Server() {
         rooms = new ArrayList<>();
 
-        //TODO remove
-
-        final Timer timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run(){
-                for(Room room:rooms) {
-//                    System.out.println(room.id + " + users: " + room.users.size());
-                }
-            }
-        }, 2000, 2000);
     }
 
     private static class ServerHelper {
@@ -40,7 +29,6 @@ public class Server {
 
         Room room = findFreeRoom();
         room.fill(user);
-        System.out.println(room);
     }
 
     public int getTimeBeforeDuel(int id) {
@@ -101,7 +89,6 @@ public class Server {
 
     public User getWinner(int roomId) {
         Room room = findRoomById(roomId);
-        System.out.println("room status " + room.getStatus());
         if (room.getStatus() != Room.RoomStatus.FINISHED) {
             return null;
         }
@@ -114,6 +101,10 @@ public class Server {
             return null;
         }
         return room.getLoser();
+    }
+
+    public int getLastTurnDamage(int roomId) {
+        return findRoomById(roomId).getLastTurnDamage();
     }
 
 }

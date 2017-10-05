@@ -15,7 +15,6 @@
     <link rel="stylesheet" type="text/css" href="<c:url value="/css/preparing.css" />"/>
 </head>
 <body>
-
     <div class="container">
         <div class="enemy">
             <div class="caption">Ваш враг:</div>
@@ -26,7 +25,5 @@
             <div class="value" id="timer"><%= room.getTimeToStart() %></div>
         </div>
     </div>
-    <div class="footer">page: 100ms, db: 5req (20 ms)</div>
-
 </body>
 </html>

@@ -22,6 +22,7 @@ function performScript() {
     var startDuelButton = document.getElementById("startDuel");
     var timer = document.getElementById("timer");
     var attackButton = document.getElementById("attack");
+    var logsBox = document.getElementById("log");
 
     var resultsModal = document.getElementById("resultsModal");
     var closeResultsModal = document.getElementById("closeResultsModal");
@@ -89,17 +90,21 @@ function performScript() {
                         var isGameFinished = "";
                         if (opponentUserInfo !== "false") {
                             var parsedInfo = JSON.parse(opponentUserInfo);
+
                             opponentHp.innerHTML = parsedInfo["hp"];
                             opponentHp.style.width = parsedInfo["hp"] ? (parsedInfo["hp"] * 100 / parsedInfo["maxHp"]) : 0 + "%";
 
-                            isGameFinished = parsedInfo["isLastTurn"]; //TODO to second write it either
+                            logsBox.innerHTML = "<br>Вы ударили " + parsedInfo["opponent"] + " на " + parsedInfo["damage"] + " урона" + logsBox.innerHTML ;
+
+                            isGameFinished = parsedInfo["isLastTurn"];
                         }
 
                         if (isGameFinished !== true) {
                             listenForCurrentUserUpdates();
                         } else {
                             client.request('/rest/updateUsersAfterGame', function(isCurrentUserWinner) {
-                                console.log(isCurrentUserWinner);
+                                logsBox.innerHTML = "<br>Вы убили " + parsedInfo["opponent"] + logsBox.innerHTML ;
+
                                 resultsModal.getElementsByClassName("result")[0].innerHTML = "Победа!";
                                 resultsModal.style.display = "block";
 
@@ -119,17 +124,18 @@ function performScript() {
                     var isGameFinished = "";
                     if (currentUserInfo !== "false") {
                         var parsedInfo = JSON.parse(currentUserInfo);
+
                         userHp.innerHTML = parsedInfo["hp"];
-                        console.log(parsedInfo["hp"]);
-                        console.log(parsedInfo["maxHp"]);
                         userHp.style.width = parsedInfo["hp"] ? (parsedInfo["hp"] * 100 / parsedInfo["maxHp"]) : 0 + "%";
+
+                        logsBox.innerHTML = "<br>" + parsedInfo["opponent"] + " ударил вас на " + parsedInfo["damage"] + " урона" + logsBox.innerHTML ;
 
                         window.clearInterval(updateListener);
                         isGameFinished = parsedInfo["isLastTurn"];
                         if (isGameFinished === true) {
                             attackButton.disabled = true;
+                            logsBox.innerHTML = "<br>Вы были убиты " + parsedInfo["opponent"] + logsBox.innerHTML ;
                             client.request('/rest/updateUsersAfterGame', function(isCurrentUserWinner) {
-                                console.log(isCurrentUserWinner);
                                 resultsModal.getElementsByClassName("result")[0].innerHTML = "Поражение";
                                 resultsModal.style.display = "block";
                             });

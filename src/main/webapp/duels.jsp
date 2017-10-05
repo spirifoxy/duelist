@@ -15,6 +15,5 @@
         </div>
         <button class="start-duel" id="startDuel">Начать дуэль</button>
     </div>
-    <div class="footer">page: 100ms, db: 5req (20 ms)</div>
 </body>
 </html>

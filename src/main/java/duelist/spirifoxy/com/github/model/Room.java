@@ -18,7 +18,7 @@ public class Room {
     private int timeBeforeDuel;
     private Timer timerBeforeDuel;
     private int currentTurn;
-
+    private int lastTurnDamage;
 
     public Room() {
 
@@ -28,6 +28,7 @@ public class Room {
         users = new ArrayList<>();
         timerBeforeDuel = new Timer();
         timeBeforeDuel = ServerPreferences.TIME_BEFORE_DUEL;
+        lastTurnDamage = 0;
     }
 
 
@@ -37,6 +38,7 @@ public class Room {
         }
 
         user.setRoomId(id);
+
         User userInRoom = new User(user);
         users.add(userInRoom);
 
@@ -102,6 +104,7 @@ public class Room {
         }
 
         int damage = ThreadLocalRandom.current().nextInt(currentUser.getDamage()-3, currentUser.getDamage()+3); //to randomize duels
+        lastTurnDamage = damage;
 
         changeTurn();
         User opponentUser = users.get(getCurrentTurn());
@@ -148,9 +151,6 @@ public class Room {
 
     public User getWinner() {
         for (User user:users) {
-
-            System.out.println(user.getStatus());
-
             if (user.getStatus() == User.UserStatus.WINNER) {
                 return user;
             }
@@ -165,5 +165,9 @@ public class Room {
             }
         }
         return null;
+    }
+
+    public int getLastTurnDamage() {
+        return lastTurnDamage;
     }
 }
